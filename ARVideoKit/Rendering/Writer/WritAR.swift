@@ -163,34 +163,11 @@ class WritAR: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
     
     var startingVideoTime: CMTime?
     var isWritingWithoutError: Bool?
+    var currentDuration: TimeInterval = 0 // Seconds
     
     func insert(pixel buffer: CVPixelBuffer, with intervals: CFTimeInterval) {
         let time: CMTime = CMTime(seconds: intervals, preferredTimescale: 1000000)
-        if assetWriter.status == .unknown {
-            guard startingVideoTime == nil else {
-                isWritingWithoutError = false
-                return
-            }
-            startingVideoTime = time
-            if assetWriter.startWriting() {
-                assetWriter.startSession(atSourceTime: startingVideoTime!)
-                session.startRunning()
-                isRecording = true
-                isWritingWithoutError = true
-            } else {
-                delegate?.recorder(didFailRecording: assetWriter.error, and: "An error occurred while starting the video session.")
-                isWritingWithoutError = false
-            }
-        } else if assetWriter.status == .failed {
-            delegate?.recorder(didFailRecording: assetWriter.error, and: "Video session failed while recording.")
-            logAR.message("An error occurred while recording the video, status: \(assetWriter.status.rawValue), error: \(assetWriter.error!.localizedDescription)")
-            isWritingWithoutError = false
-            return
-        }
-        if videoInput.isReadyForMoreMediaData {
-            append(pixel: buffer, with: time)
-            isWritingWithoutError = true
-        }
+        insert(pixel: buffer, with: time)
     }
     
     func insert(pixel buffer: CVPixelBuffer, with time: CMTime) {
@@ -202,16 +179,19 @@ class WritAR: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
             startingVideoTime = time
             if assetWriter.startWriting() {
                 assetWriter.startSession(atSourceTime: startingVideoTime!)
+                currentDuration = 0
                 isRecording = true
                 isWritingWithoutError = true
             } else {
                 delegate?.recorder(didFailRecording: assetWriter.error, and: "An error occurred while starting the video session.")
+                currentDuration = 0
                 isRecording = false
                 isWritingWithoutError = false
             }
         } else if assetWriter.status == .failed {
             delegate?.recorder(didFailRecording: assetWriter.error, and: "Video session failed while recording.")
             logAR.message("An error occurred while recording the video, status: \(assetWriter.status.rawValue), error: \(assetWriter.error!.localizedDescription)")
+            currentDuration = 0
             isRecording = false
             isWritingWithoutError = false
             return
@@ -219,8 +199,10 @@ class WritAR: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
         
         if videoInput.isReadyForMoreMediaData {
             append(pixel: buffer, with: time)
+            currentDuration = time.seconds - startingVideoTime!.seconds
             isRecording = true
             isWritingWithoutError = true
+            delegate?.recorder(didUpdateRecording: currentDuration)
         }
     }
 
@@ -238,13 +220,22 @@ class WritAR: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
         isRecording = false
     }
     
-    func end(writing finished: @escaping () -> Void){
+    func end(writing finished: @escaping () -> Void) {
         if let session = session {
             if session.isRunning {
                 session.stopRunning()
             }
         }
         assetWriter.finishWriting(completionHandler: finished)
+    }
+    
+    func cancel() {
+        if let session = session {
+            if session.isRunning {
+                session.stopRunning()
+            }
+        }
+        assetWriter.cancelWriting()
     }
 }
 
