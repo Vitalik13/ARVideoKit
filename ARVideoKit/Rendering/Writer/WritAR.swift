@@ -202,7 +202,7 @@ class WritAR: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
             currentDuration = time.seconds - startingVideoTime!.seconds
             isRecording = true
             isWritingWithoutError = true
-            delegate?.recorder(didUpdateRecording: currentDuration)
+            delegate?.recorder?(didUpdateRecording: currentDuration)
         }
     }
 
@@ -226,7 +226,10 @@ class WritAR: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
                 session.stopRunning()
             }
         }
-        assetWriter.finishWriting(completionHandler: finished)
+        
+        if assetWriter.status == .writing {
+            assetWriter.finishWriting(completionHandler: finished)
+        }
     }
     
     func cancel() {
