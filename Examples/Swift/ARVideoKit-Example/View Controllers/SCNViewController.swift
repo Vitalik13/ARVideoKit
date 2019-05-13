@@ -285,5 +285,9 @@ extension SCNViewController {
             recorder?.stopAndExport()
         }
     }
+
+    func recorder(didCancelRecording status: String) {
+        
+    }
 }
 

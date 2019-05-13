@@ -12,7 +12,7 @@ import ARVideoKit
 import Photos
 
 class SKViewController: UIViewController, ARSKViewDelegate, RenderARDelegate, RecordARDelegate  {
-    
+
     @IBOutlet var SKSceneView: ARSKView!
     @IBOutlet var recordBtn: UIButton!
     @IBOutlet var pauseBtn: UIButton!
@@ -275,6 +275,10 @@ extension SKViewController {
         if status == .recording {
             recorder?.stopAndExport()
         }
+    }
+
+    func recorder(didCancelRecording status: String) {
+
     }
 }
 
