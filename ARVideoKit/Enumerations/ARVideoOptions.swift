@@ -5,6 +5,7 @@
 //  Created by Ahmed Bekhit on 10/18/17.
 //  Copyright © 2017 Ahmed Fathi Bekhit. All rights reserved.
 //
+import Foundation
 
 /// Allows specifying the final video orientation.
 @objc public enum ARFrameMode: Int {
@@ -12,6 +13,7 @@
     case aspectFit
     /// Recommended for iPhone X
     case aspectFill
+    case viewAspectRatio
 }
 
 /// Allows specifying the video rendering frame per second `FPS` rate.

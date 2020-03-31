@@ -109,6 +109,21 @@ import PhotosUI
             }
         }
     }
+    /**
+     A boolean that indicates whether render engine should retain SCNTechnique used in the view. Default is `false`.
+     */
+    @objc public var retainTechnique: Bool = false {
+        didSet {
+            if retainTechnique {
+                guard let techniqueSupportingView = view as? SCNTechniqueSupport else {
+                    return
+                }
+                renderEngine?.technique = techniqueSupportingView.technique
+            } else {
+                renderEngine?.technique = nil
+            }
+        }
+    }
     
     //MARK: - Public initialization methods
     /**
@@ -128,16 +143,9 @@ import PhotosUI
         view = ARSpriteKit
         scnView = SCNView(frame: UIScreen.main.bounds)
         
-        let bundle = Bundle(for: RecordAR.self)
-        let url = bundle.url(forResource: "video.scnassets/vid", withExtension: "scn")
-        
-        do {
-            let scene = try SCNScene(url: url!, options: nil)
-            scnView.scene = scene
-            setup()
-        }catch let error {
-            logAR.message("Error occurred while loading SK Video Assets : \(error). Please download \"video.scnassets\" from\nwww.ahmedbekhit.com/ARVideoKitAssets")
-        }
+        let scene = SCNScene()
+        scnView.scene = scene
+        setup()
     }
     
     /**
