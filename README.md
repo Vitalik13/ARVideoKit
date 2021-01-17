@@ -2,6 +2,13 @@
 
 > Use [master](https://github.com/AFathi/ARVideoKit/tree/master) branch for projects written in Swift 4.0
 
+## Sponsors
+[**Chemical Wedding**](https://www.chemicalwedding.tv)
+
+![Chemical Wedding](https://www.chemicalwedding.tv/imgs/general/logo-main.png)
+
+## ARVideoKit
+
 ![intro image](http://www.ahmedbekhit.com/projects/repo-header-arvideokit.png)
 
 An iOS Framework that enables developers to capture videos 📹, photos 🌄, Live Photos 🎇, and GIFs 🎆 with ARKit content.
@@ -20,6 +27,7 @@ In other words, you **NO LONGER** have to ~screen record~/~screenshot~ to captur
 | [Implementation](#implementation) | Lists the [steps needed](#implementation) for Objective-C & Swift, [notes](#note), and [reference](#youre-all-set-) for more options  |
 | [Publishing to the App Store](#publishing-to-the-app-store) | Describes the steps **required** before submitting an application using `ARVideoKit` to the App Store. |
 |[![Donate](https://www.paypalobjects.com/webstatic/en_US/i/btn/png/btn_donate_92x26.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=ahmedfbekhit@gmail.com&item_name=Support+ARVideoKit+Developer&item_number=ARVideoKit+Framework+Donations&amount=0%2e00&currency_code=USD) | [Donations](#donate) will support me to keep maintaining `ARVideoKit` ❤️|
+|[Sponsors](#sponsors) | Featuring the sponsors of this project |
 | [Contributions](#contributions) | Describes how you can contribute to this project |
 | [Apps using ARVideoKit](#apps-using-arvideokit) | A list of published applications using ARVideoKit |
 | [License](#license) | Describes `ARVideoKit` license |
@@ -146,7 +154,7 @@ To do so, follow those steps:
 Donations will support me to keep maintining **ARVideoKit Framework** ❤️
 
 [![Donate](https://www.paypalobjects.com/webstatic/en_US/i/btn/png/btn_donate_92x26.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=ahmedfbekhit@gmail.com&item_name=Support+ARVideoKit+Developer&item_number=ARVideoKit+Framework+Donations&amount=0%2e00&currency_code=USD)
-
+ 
 ## Contributions
 If you have an idea for a new **ARVideoKit** feature/functionality and want to add it to this repository, feel free to fork the project and create a pull request!
 
@@ -156,6 +164,8 @@ Also, feel free to create an issue if you have any suggestions or need any help 
 | App  |  Description   |
 | ------------------ |:------------------:|
 | [Our SolAR](https://itunes.apple.com/app/id1267675913) | An app that allows you to see our Solar System anywhere at all! |
+| [In The Walls](https://apps.apple.com/us/app/id1522257130) | Uses real time face tracking and AR to put your face in any real world wall! |
+| [ScribScrab](https://apps.apple.com/in/app/scribscrab/id1339432955) | ScribScrab is a tool for creativity. You’re only limited to your imagination and your battery life. |
 
 _Feel free to add your application to this list!_
 ## License
