@@ -18,15 +18,6 @@ import ARKit
  */
 @available(iOS 11.0, *)
 @objc public class ViewAR: NSObject {
-    /**
-     A `UIInterfaceOrientationMask` object that returns the recommended orientations for a `UIViewController` with AR scenes.
-     
-     Recommended to return in the application delegate method `func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask`.
-    */
-    @objc internal(set) public static var orientation: UIInterfaceOrientationMask {
-        get { return mask }
-        set { mask = newValue }
-    }
     
     static var orientations: [UIInterfaceOrientationMask] {
         var all:[UIInterfaceOrientationMask] = []

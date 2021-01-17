@@ -727,30 +727,12 @@ import PhotosUI
         renderer.ARcontentMode = contentMode
         onlyRenderWhileRec = onlyRenderWhileRecording
         if let view = view as? ARSCNView {
-            //UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
-            //ViewAR.orientation = .portrait
-            
-            //try resetting anchors for the initial landscape orientation issue.
             guard let config = configuration else { return }
             view.session.run(config)
         } else if let view = view as? ARSKView {
-            //UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
-            //ViewAR.orientation = .portrait
-
             guard let config = configuration else { return }
             view.session.run(config)
-        } else if let _ = view as? SCNView {
-            //UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
-            //ViewAR.orientation = .portrait
-        }
-    }
-    /**
-     A method that switches off the orientation lock used in a `UIViewController` with AR scenes 📐😴.
-     
-     Recommended to use in the `UIViewController`'s method `func viewWillDisappear(_ animated: Bool)`.
-    */
-    @objc func rest() {
-        //ViewAR.orientation = UIInterfaceOrientationMask(ViewAR.orientations)
+        } else if let _ = view as? SCNView {}
     }
 }
 
