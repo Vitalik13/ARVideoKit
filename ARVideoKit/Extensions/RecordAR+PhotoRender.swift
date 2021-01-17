@@ -21,15 +21,6 @@ extension RecordAR {
         let coreImg = CIImage(cvPixelBuffer: buffer)
         let context = CIContext()
         let cgImg = context.createCGImage(coreImg, from: coreImg.extent)
-        
-        var angleEnabled: Bool {
-            for v in inputViewOrientations {
-                if UIDevice.current.orientation.rawValue == v.rawValue {
-                    return true
-                }
-            }
-            return false
-        }
 
         let rotationAngle: CGFloat
         if !angleEnabled {
@@ -45,6 +36,10 @@ extension RecordAR {
         delegate?.recorder(willEnterBackground: status)
     }
 
+    private var angleEnabled: Bool {
+        inputViewOrientations.contains(where: { $0.rawValue == UIDevice.current.orientation.rawValue })
+    }
+
     private func getRotationAngleForVideoOrientation() -> CGFloat {
         switch videoOrientation {
         case .auto:
@@ -58,7 +53,7 @@ extension RecordAR {
             case .landscapeRight:
                 return .pi/2
             default:
-                return 0
+                return -.pi/2
             }
         }
     }

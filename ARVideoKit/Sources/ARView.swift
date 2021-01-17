@@ -99,7 +99,7 @@ import ARKit
         guard var views = parentVC?.view.subviews else {
             return
         }
-        
+
         switch inputViewOrientationMode {
         case .auto:
             views = views.filter { !$0.isARView && $0.isButton }
@@ -110,14 +110,7 @@ import ARKit
         case .disabled:
             views = []
         }
-        var angleEnabled: Bool {
-            for v in inputViewOrientations {
-                if UIDevice.current.orientation.rawValue == v.rawValue {
-                    return true
-                }
-            }
-            return false
-        }
+
         let rotationAngle: CGFloat
         if !angleEnabled {
             rotationAngle = 0
@@ -130,6 +123,10 @@ import ARKit
                 view.transform = CGAffineTransform(rotationAngle: CGFloat(rotationAngle).degreesToRadians)
             })
         }
+    }
+
+    private var angleEnabled: Bool {
+        inputViewOrientations.contains(where: { $0.rawValue == UIDevice.current.orientation.rawValue })
     }
 
     private func getRotationAngle() -> CGFloat {

@@ -28,7 +28,7 @@ class WritAR: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
     weak var delegate: RecordARDelegate?
     var videoInputOrientation: ARVideoOrientation = .auto
 
-    init(output: URL, width: Int, height: Int, adjustForSharing: Bool, audioEnabled: Bool, orientations:[ARInputViewOrientation], queue: DispatchQueue, allowMix: Bool) {
+    init(output: URL, width: Int, height: Int, adjustForSharing: Bool, audioEnabled: Bool, orientations: [ARInputViewOrientation], queue: DispatchQueue, allowMix: Bool) {
         super.init()
         do {
             assetWriter = try AVAssetWriter(outputURL: output, fileType: AVFileType.mp4)
@@ -66,15 +66,7 @@ class WritAR: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
         videoInput.expectsMediaDataInRealTime = true
         pixelBufferInput = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: videoInput, sourcePixelBufferAttributes: nil)
 
-        var angleEnabled: Bool {
-            for v in orientations {
-                if UIDevice.current.orientation.rawValue == v.rawValue {
-                    return true
-                }
-            }
-            return false
-        }
-        
+        let angleEnabled = isAngleEnabled(orientations: orientations)
         if !angleEnabled {
             videoInput.transform = .identity
         } else {
@@ -88,6 +80,10 @@ class WritAR: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
             isWritingWithoutError = false
         }
         assetWriter.shouldOptimizeForNetworkUse = adjustForSharing
+    }
+
+    private func isAngleEnabled(orientations:  [ARInputViewOrientation]) -> Bool {
+        orientations.contains(where: { $0.rawValue == UIDevice.current.orientation.rawValue })
     }
 
     private func getVideoTransformForVideoInputOrientation() -> CGAffineTransform {
@@ -110,15 +106,12 @@ class WritAR: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
 
     private func getVideoTransform() -> CGAffineTransform {
         switch UIDevice.current.orientation {
-        case .portrait:
-            return .identity
-        case .portraitUpsideDown:
-            //return CGAffineTransform(rotationAngle: .pi)
-            return .identity
         case .landscapeLeft:
             return CGAffineTransform(rotationAngle: -.pi/2)
         case .landscapeRight:
             return CGAffineTransform(rotationAngle: .pi/2)
+        case .faceUp, .faceDown, .portraitUpsideDown:
+            return .identity
         default:
             return .identity
         }
