@@ -71,7 +71,3 @@ extension RecordAR {
         }
     }
 }
-
-extension FloatingPoint {
-    var degreesToRadians: Self { return self * .pi / 180 }
-}

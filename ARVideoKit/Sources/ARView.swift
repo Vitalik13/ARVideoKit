@@ -120,7 +120,7 @@ import ARKit
         
         for view in views {
             UIView.animate(withDuration: 0.2, animations: {
-                view.transform = CGAffineTransform(rotationAngle: CGFloat(rotationAngle).degreesToRadians)
+                view.transform = CGAffineTransform(rotationAngle: rotationAngle)
             })
         }
     }
@@ -132,9 +132,9 @@ import ARKit
     private func getRotationAngle() -> CGFloat {
         switch UIDevice.current.orientation {
         case .landscapeLeft:
-            return .pi/2
-        case .landscapeRight:
             return -.pi/2
+        case .landscapeRight:
+            return .pi/2
         case .faceUp, .faceDown, .portraitUpsideDown:
             return 0
         default:
