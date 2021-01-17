@@ -30,43 +30,50 @@ extension RecordAR {
             }
             return false
         }
-        
-        var recentAngle: CGFloat = 0
-        var rotationAngle: CGFloat = 0
-        switch UIDevice.current.orientation {
-        case .landscapeLeft:
-            rotationAngle = -90
-            recentAngle = -90
-        case .landscapeRight:
-            rotationAngle = 90
-            recentAngle = 90
-        case .faceUp, .faceDown, .portraitUpsideDown:
-            rotationAngle = recentAngle
-        default:
-            rotationAngle = 0
-            recentAngle = 0
-        }
-        
+
+        let rotationAngle: CGFloat
         if !angleEnabled {
             rotationAngle = 0
+        } else {
+            rotationAngle = getRotationAngle()
         }
-        
-        switch videoOrientation {
-        case .alwaysPortrait:
-            rotationAngle = 0
-        case .alwaysLandscape:
-            if rotationAngle != 90 || rotationAngle != -90 {
-                rotationAngle = -90
-            }
-        default:
-            break
-        }
-        
+
         return UIImage(cgImage: cgImg!).rotate(by: rotationAngle, flip: false)
     }
-    
+
     @objc func appWillEnterBackground() {
         delegate?.recorder(willEnterBackground: status)
+    }
+
+    private func getRotationAngleForVideoOrientation() -> CGFloat {
+        switch videoOrientation {
+        case .auto:
+            return getRotationAngle()
+        case .alwaysPortrait:
+            return 0
+        case .alwaysLandscape:
+            switch UIDevice.current.orientation {
+            case .landscapeLeft:
+                return -.pi/2
+            case .landscapeRight:
+                return .pi/2
+            default:
+                return 0
+            }
+        }
+    }
+
+    private func getRotationAngle() -> CGFloat {
+        switch UIDevice.current.orientation {
+        case .landscapeLeft:
+            return -.pi/2
+        case .landscapeRight:
+            return .pi/2
+        case .faceUp, .faceDown, .portraitUpsideDown:
+            return 0
+        default:
+            return 0
+        }
     }
 }
 

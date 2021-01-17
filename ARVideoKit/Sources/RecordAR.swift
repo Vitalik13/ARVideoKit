@@ -727,20 +727,21 @@ import PhotosUI
         renderer.ARcontentMode = contentMode
         onlyRenderWhileRec = onlyRenderWhileRecording
         if let view = view as? ARSCNView {
-            UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
-            ViewAR.orientation = .portrait
+            //UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+            //ViewAR.orientation = .portrait
             
             //try resetting anchors for the initial landscape orientation issue.
             guard let config = configuration else { return }
             view.session.run(config)
         } else if let view = view as? ARSKView {
-            UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
-            ViewAR.orientation = .portrait
+            //UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+            //ViewAR.orientation = .portrait
+
             guard let config = configuration else { return }
             view.session.run(config)
         } else if let _ = view as? SCNView {
-            UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
-            ViewAR.orientation = .portrait
+            //UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+            //ViewAR.orientation = .portrait
         }
     }
     /**
@@ -749,7 +750,7 @@ import PhotosUI
      Recommended to use in the `UIViewController`'s method `func viewWillDisappear(_ animated: Bool)`.
     */
     @objc func rest() {
-        ViewAR.orientation = UIInterfaceOrientationMask(ViewAR.orientations)
+        //ViewAR.orientation = UIInterfaceOrientationMask(ViewAR.orientations)
     }
 }
 
@@ -814,7 +815,7 @@ extension RecordAR {
                 } else {
                     self.currentVideoPath = self.newVideoPath
                     
-                    self.writer = WritAR(output: self.currentVideoPath!, width: Int(size.width), height: Int(size.height), adjustForSharing: self.adjustVideoForSharing, audioEnabled: self.enableAudio, orientaions: self.inputViewOrientations, queue: self.writerQueue, allowMix: self.enableMixWithOthers)
+                    self.writer = WritAR(output: self.currentVideoPath!, width: Int(size.width), height: Int(size.height), adjustForSharing: self.adjustVideoForSharing, audioEnabled: self.enableAudio, orientations: self.inputViewOrientations, queue: self.writerQueue, allowMix: self.enableMixWithOthers)
                     self.writer?.videoInputOrientation = self.videoOrientation
                     self.writer?.delegate = self.delegate
                 }

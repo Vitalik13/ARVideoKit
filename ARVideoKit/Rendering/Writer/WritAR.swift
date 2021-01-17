@@ -28,7 +28,7 @@ class WritAR: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
     weak var delegate: RecordARDelegate?
     var videoInputOrientation: ARVideoOrientation = .auto
 
-    init(output: URL, width: Int, height: Int, adjustForSharing: Bool, audioEnabled: Bool, orientaions:[ARInputViewOrientation], queue: DispatchQueue, allowMix: Bool) {
+    init(output: URL, width: Int, height: Int, adjustForSharing: Bool, audioEnabled: Bool, orientations:[ARInputViewOrientation], queue: DispatchQueue, allowMix: Bool) {
         super.init()
         do {
             assetWriter = try AVAssetWriter(outputURL: output, fileType: AVFileType.mp4)
@@ -67,7 +67,7 @@ class WritAR: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
         pixelBufferInput = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: videoInput, sourcePixelBufferAttributes: nil)
 
         var angleEnabled: Bool {
-            for v in orientaions {
+            for v in orientations {
                 if UIDevice.current.orientation.rawValue == v.rawValue {
                     return true
                 }
@@ -75,42 +75,11 @@ class WritAR: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
             return false
         }
         
-        var recentAngle: CGFloat = 0
-        var rotationAngle: CGFloat = 0
-        switch UIDevice.current.orientation {
-        case .landscapeLeft:
-            rotationAngle = -90
-            recentAngle = -90
-        case .landscapeRight:
-            rotationAngle = 90
-            recentAngle = 90
-        case .faceUp, .faceDown, .portraitUpsideDown:
-            rotationAngle = recentAngle
-        default:
-            rotationAngle = 0
-            recentAngle = 0
-        }
-        
         if !angleEnabled {
-            rotationAngle = 0
+            videoInput.transform = .identity
+        } else {
+            videoInput.transform = getVideoTransformForVideoInputOrientation()
         }
-        
-        var t = CGAffineTransform.identity
-
-        switch videoInputOrientation {
-        case .auto:
-            t = t.rotated(by: ((rotationAngle*CGFloat.pi) / 180))
-        case .alwaysPortrait:
-            t = t.rotated(by: 0)
-        case .alwaysLandscape:
-            if rotationAngle == 90 || rotationAngle == -90 {
-                t = t.rotated(by: ((rotationAngle * CGFloat.pi) / 180))
-            } else {
-                t = t.rotated(by: ((-90 * CGFloat.pi) / 180))
-            }
-        }
-        
-        videoInput.transform = t
         
         if assetWriter.canAdd(videoInput) {
             assetWriter.add(videoInput)
@@ -119,6 +88,40 @@ class WritAR: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
             isWritingWithoutError = false
         }
         assetWriter.shouldOptimizeForNetworkUse = adjustForSharing
+    }
+
+    private func getVideoTransformForVideoInputOrientation() -> CGAffineTransform {
+        switch videoInputOrientation {
+        case .auto:
+            return getVideoTransform()
+        case .alwaysPortrait:
+            return .identity
+        case .alwaysLandscape:
+            switch UIDevice.current.orientation {
+            case .landscapeLeft:
+                return CGAffineTransform(rotationAngle: -.pi/2)
+            case .landscapeRight:
+                return CGAffineTransform(rotationAngle: .pi/2)
+            default:
+                return CGAffineTransform(rotationAngle: -.pi/2)
+            }
+        }
+    }
+
+    private func getVideoTransform() -> CGAffineTransform {
+        switch UIDevice.current.orientation {
+        case .portrait:
+            return .identity
+        case .portraitUpsideDown:
+            //return CGAffineTransform(rotationAngle: .pi)
+            return .identity
+        case .landscapeLeft:
+            return CGAffineTransform(rotationAngle: -.pi/2)
+        case .landscapeRight:
+            return CGAffineTransform(rotationAngle: .pi/2)
+        default:
+            return .identity
+        }
     }
     
     func prepareAudioDevice(with queue: DispatchQueue) {
