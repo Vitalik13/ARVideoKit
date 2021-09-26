@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
   s.version      = "1.7.0"
   s.summary      = "Capture & record ARKit videos 📹, photos 🌄, Live Photos 🎇, and GIFs 🎆."
   s.description  = "Enabling developers to capture videos 📹, photos 🌄, Live Photos 🎇, and GIFs 🎆 with augmented reality components."
-  s.homepage     = "https://github.com/AFathi/ARVideoKit"
+  s.homepage     = "https://github.com/Vitalik13/ARVideoKit"
   s.screenshots  = "http://www.ahmedbekhit.com/SK_PREV.gif", "http://www.ahmedbekhit.com/SCN_PREVIEW.gif"
   s.swift_version = '5.0'
 
