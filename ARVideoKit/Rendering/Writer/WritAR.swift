@@ -146,8 +146,7 @@ class WritAR: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
             session.addOutput(audioDataOutput)
         }
         
-
-        audioSettings = audioDataOutput.recommendedAudioSettingsForAssetWriter(writingTo: .m4v) as? [String: Any]
+        audioSettings = audioDataOutput.recommendedAudioSettingsForAssetWriter(writingTo: .m4v)
         
         audioInput = AVAssetWriterInput(mediaType: .audio, outputSettings: audioSettings)
         audioInput.expectsMediaDataInRealTime = true

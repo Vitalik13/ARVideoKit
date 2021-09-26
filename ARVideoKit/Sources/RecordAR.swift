@@ -11,6 +11,7 @@ import Metal
 import ARKit
 import Photos
 import PhotosUI
+import RealityKit
 
 /**
  This class renders the `ARSCNView` or `ARSKView` content with the device's camera stream to generate a video 📹, photo 🌄, live photo 🎇 or GIF 🎆.
@@ -156,6 +157,16 @@ import PhotosUI
         view = SceneKit
         setup()
     }
+    
+    /**
+     Initialize 🌞🍳 `RecordAR` with an `RealityKit.ARView` 🚀.
+     */
+    @available(iOS 13.0, *)
+    @objc override public init?(RealityKit: RealityKit.ARView) {
+        super.init(RealityKit: RealityKit)
+        view = RealityKit
+        setup()
+    }
 
     //MARK: - Deinit
     deinit {
@@ -271,6 +282,22 @@ import PhotosUI
             renderEngine = SCNRenderer(device: mtlDevice, options: nil)
             renderEngine.scene = view.scene
 
+            gpuLoop = CADisplayLink(target: WeakProxy(target: self),
+                                    selector: #selector(renderFrame))
+            gpuLoop.preferredFramesPerSecond = fps.rawValue
+            gpuLoop.add(to: .main, forMode: .common)
+            
+            status = .readyToRecord
+        } else if #available(iOS 13.0, *),
+                  let _ = view as? RealityKit.ARView {
+            guard let mtlDevice = MTLCreateSystemDefaultDevice() else {
+                logAR.message("ERROR:- This device does not support Metal")
+                return
+            }
+            
+            //NOT used in actual rendering, just a place holder.
+            renderEngine = SCNRenderer(device: mtlDevice, options: nil)
+            
             gpuLoop = CADisplayLink(target: WeakProxy(target: self),
                                     selector: #selector(renderFrame))
             gpuLoop.preferredFramesPerSecond = fps.rawValue
@@ -741,6 +768,12 @@ import PhotosUI
         } else if let _ = view as? SCNView {
             UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
             ViewAR.orientation = .portrait
+        } else if #available(iOS 13.0, *),
+             let view = view as? RealityKit.ARView {
+            UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+            ViewAR.orientation = .portrait
+            guard let config = configuration else { return }
+            view.session.run(config)
         }
     }
     /**

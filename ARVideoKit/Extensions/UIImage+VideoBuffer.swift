@@ -65,3 +65,26 @@ extension UIImage
         return pixelBuffer
     }
 }
+
+extension UIView {
+    
+    func imageViaLayerDraw() -> UIImage? {//always black
+        UIGraphicsBeginImageContextWithOptions(self.bounds.size, self.isOpaque, 0.0)
+        defer { UIGraphicsEndImageContext() }
+        if let context = UIGraphicsGetCurrentContext() {
+            self.layer.render(in: context)
+            let image = UIGraphicsGetImageFromCurrentImageContext()
+            return image
+        }
+        return nil
+    }
+    
+    func imageViaViewDraw() -> UIImage? {//very slow
+        let renderer = UIGraphicsImageRenderer(size: self.bounds.size)
+        let capturedImage = renderer.image {
+            (ctx) in
+            self.drawHierarchy(in: self.bounds, afterScreenUpdates: true)
+        }
+        return capturedImage
+    }
+}

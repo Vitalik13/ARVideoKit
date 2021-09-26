@@ -8,6 +8,7 @@
 
 import Foundation
 import ARKit
+import RealityKit
 
 @available(iOS 11.0, *)
 struct RenderAR {
@@ -32,6 +33,10 @@ struct RenderAR {
             return rawBuffer
         } else if view is SCNView {
             return buffer
+        } else if #available(iOS 13.0, *),
+                  let view = view as? RealityKit.ARView {
+            guard let rawBuffer = view.session.currentFrame?.capturedImage else { return nil }
+            return rawBuffer
         }
         return nil
     }
@@ -125,6 +130,21 @@ struct RenderAR {
                 renderedFrame = renderEngine.snapshot(atTime: time, with: size, antialiasingMode: .none)
             }
             guard let buffer = renderedFrame!.buffer else { return nil }
+            return buffer
+        } else if #available(iOS 13.0, *), let view = view as? RealityKit.ARView {
+//            guard let size = bufferSize else { return nil }
+            var renderedFrame: UIImage?
+            pixelsQueue.sync {
+                view.snapshot(saveToHDR: false) { image in
+                    renderedFrame = image
+                }
+            }
+            if renderedFrame == nil {
+                renderedFrame = view.snapshotView(afterScreenUpdates: false)?.imageViaViewDraw()
+            }
+            
+            guard let buffer = renderedFrame?.buffer else { return nil }
+            
             return buffer
         }
         return nil

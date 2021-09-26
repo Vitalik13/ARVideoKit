@@ -8,6 +8,7 @@
 
 import UIKit
 import ARKit
+import RealityKit
 
 @available(iOS 11.0, *)
 extension UIScreen {
@@ -36,6 +37,10 @@ extension UIView {
     }
     
     var isARView: Bool {
-        return (self is ARSCNView) || (self is ARSKView)
+        var isRealityArView = false
+        if #available(iOS 13.0, *) {
+            isRealityArView = self is RealityKit.ARView
+        }
+        return (self is ARSCNView) || (self is ARSKView) || isRealityArView
     }
 }

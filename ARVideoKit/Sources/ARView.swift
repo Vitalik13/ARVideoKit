@@ -8,6 +8,7 @@
 
 import UIKit
 import ARKit
+import RealityKit
 
 /**
  A class that configures the Augmented Reality View orientations.
@@ -90,6 +91,23 @@ import ARKit
         ViewAR.orientation = .portrait
         
         guard let vc = SceneKit.parent else {
+            return
+        }
+        
+        parentVC = vc
+    }
+    
+    @available(iOS 13.0, *)
+    @objc init?(RealityKit: RealityKit.ARView) {
+        super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(deviceDidRotate), name: UIDevice.orientationDidChangeNotification, object: nil)
+        
+        let value = UIInterfaceOrientation.portrait.rawValue
+        UIDevice.current.setValue(value, forKey: "orientation")
+        
+        ViewAR.orientation = .portrait
+        
+        guard let vc = RealityKit.parent else {
             return
         }
         
